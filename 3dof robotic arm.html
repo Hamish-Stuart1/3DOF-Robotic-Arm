@@ -375,7 +375,7 @@ let angles = [0, 45, -30];
 let stopped = false, busy = false;
 let objLocation = 'A';
 
-// ── Analytical IK ──────────────────────────────────────────────────────────
+// Analytical IK
 function rad(d) { return d * Math.PI / 180; }
 function deg(r) { return r * 180 / Math.PI; }
 
@@ -420,7 +420,7 @@ function computeIK(tx, ty) {
   return best;
 }
 
-// ── FK & rendering ─────────────────────────────────────────────────────────
+// FK & rendering
 function fkPoints(a) {
   let x = SX, y = SY, cum = 0;
   const pts = [[x, y]];
@@ -487,7 +487,7 @@ function setObjVisibility() {
   });
 }
 
-// ── Platform geometry ──────────────────────────────────────────────────────
+// Platform geometry
 function updatePlatformSVG(key) {
   const cx = platX[key];
   ['plat'+key+'bar','plat'+key+'shelf'].forEach(id => {
@@ -517,18 +517,18 @@ function initPlatformSliders() {
   });
 }
 
-// ── Joint sliders ──────────────────────────────────────────────────────────
+// Joint sliders
 function buildJoints() {
   const c = document.getElementById('joints-container'); c.innerHTML='';
   NAMES.forEach((name,i) => {
     const d = document.createElement('div'); d.className='joint-row';
-    d.innerHTML='<div class="jh"><span class="jname">'+name+'</span><span class="jval" id="av'+i+'">'+angles[i]+'°</span></div>'
+    d.innerHTML='<div class="jh"><span class="jname">'+name+'</span><span class="jval" id="av'+i+'">'+angles[i]+'</span></div>'
       +'<input type="range" min="'+LIMITS[i][0]+'" max="'+LIMITS[i][1]+'" value="'+angles[i]+'" step="1" id="sl'+i+'">';
     c.appendChild(d);
     document.getElementById('sl'+i).addEventListener('input', e => {
       if (stopped||busy) return;
       angles[i]=parseInt(e.target.value);
-      document.getElementById('av'+i).textContent=angles[i]+'°';
+      document.getElementById('av'+i).textContent=angles[i]+'';
       updateViz(false);
       appendLog('[FW] joint_write(J'+(i+1)+', '+angles[i]+')');
     });
@@ -538,11 +538,11 @@ function buildJoints() {
 function setSliders() {
   for(let i=0;i<3;i++){
     const sl=document.getElementById('sl'+i);
-    if(sl){sl.value=angles[i];document.getElementById('av'+i).textContent=angles[i]+'°';}
+    if(sl){sl.value=angles[i];document.getElementById('av'+i).textContent=angles[i]+'';}
   }
 }
 
-// ── Logging ────────────────────────────────────────────────────────────────
+// Logging
 function appendLog(msg, cls) {
   const log=document.getElementById('log');
   const p=document.createElement('p'); if(cls)p.className=cls;
@@ -552,7 +552,7 @@ function appendLog(msg, cls) {
   log.scrollTop=log.scrollHeight;
 }
 
-// ── Animation ──────────────────────────────────────────────────────────────
+// Animation
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 
 async function animateTo(targetAngles, carrying, steps=40) {
@@ -567,7 +567,7 @@ async function animateTo(targetAngles, carrying, steps=40) {
   angles=[...target]; setSliders(); updateViz(carrying);
 }
 
-// ── Controls ───────────────────────────────────────────────────────────────
+// controls
 function runHome() {
   if(stopped||busy)return;
   angles=[...HOME_ANGLES]; setSliders(); updateViz(false);
@@ -648,7 +648,7 @@ async function runPickPlace() {
   document.getElementById('btnRun').disabled=false;
 }
 
-// ── Init ───────────────────────────────────────────────────────────────────
+// Init
 buildJoints();
 initPlatformSliders();
 updateAllPlatforms();
